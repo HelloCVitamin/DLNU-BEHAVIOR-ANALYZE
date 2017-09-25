@@ -1,6 +1,6 @@
 # 学生行为数据处理步骤
 
-> 1. 建立密码表
+## 1. 建立密码表
 ```sql
 CREATE TABLE UID_PASSWORD(
 	ID SERIAL PRIMARY KEY,
@@ -9,12 +9,12 @@ CREATE TABLE UID_PASSWORD(
 );
 ```
 
-> 2. 从远程数据库导入DRCOM密码数据（学术研究所需，数据严格保密）
+## 2. 从远程数据库导入DRCOM密码数据（学术研究所需，数据严格保密）
 ```bash
 python detabase.py
 ```
 
-> 3. 建立历史登陆数据表
+## 3. 建立历史登陆数据表
 ```sql
 CREATE TABLE USER_LOGIN_HISTORY(
 	ID SERIAL PRIMARY KEY,
@@ -27,18 +27,18 @@ CREATE TABLE USER_LOGIN_HISTORY(
 );
 ```
 
-> 4. 从DRCOM网站下载所有人的登陆历史记录
+## 4. 从DRCOM网站下载所有人的登陆历史记录
 ```bash
 python login_history_downloader.py
 ```
 
-> 5. 为USER_LOGIN_HISTORY建立索引
+## 5. 为USER_LOGIN_HISTORY建立索引
 ```sql
 CREATE INDEX IDX_HISTORY_UID ON USER_LOGIN_HISTORY (UID);
 CREATE INDEX IDX_HISTORY_SOURCE_IP ON USER_LOGIN_HISTORY (SOURCE_IP);
 ```
 
-> 6. 检查USER_LOGIN_HISTORY数据是否可靠无重复
+## 6. 检查USER_LOGIN_HISTORY数据是否可靠无重复
 ```sql
 -- 若有结果，请删除出现的学号的数据并单线程重新导入
 SELECT
@@ -58,15 +58,15 @@ GROUP BY
     A.UID
 ```
 
-> 7. 导入小偲OPENID用户表
+## 7. 导入小偲OPENID用户表
 
-> 8. 为小偲OPENID用户表建立索引
+## 8. 为小偲OPENID用户表建立索引
 ```sql
 CREATE INDEX IDX_USER_OPENID_UID ON USER_OPENID (UID);
 ```
-> 9. 导入小偲微信地理位置表
+## 9. 导入小偲微信地理位置表
 
-> 10. 为小偲微信地理位置表DROP无用列和建立索引
+## 10. 为小偲微信地理位置表DROP无用列和建立索引
 ```sql
 ALTER TABLE USER_LOCATION DROP PLATFORM_ID;
 ALTER TABLE USER_LOCATION DROP ADDRESS;
@@ -80,12 +80,12 @@ CREATE INDEX IDX_USER_LOCALTION_OPENID ON USER_LOCATION (OPENID);
 CREATE INDEX IDX_USER_LOCALTION_ID ON USER_LOCATION (ID);
 ```
 
-> 11. 清理小偲微信地理位置无效数据
+## 11. 清理小偲微信地理位置无效数据
 ```bash
 python clear_user_location.py
 ```
 
-> 12. 建立WI-FI AP的地理位置分析表
+## 12. 建立WI-FI AP的地理位置分析表
 ```sql
 CREATE TABLE AP_GPS_PINS(
 	ID SERIAL PRIMARY KEY,
@@ -96,12 +96,12 @@ CREATE TABLE AP_GPS_PINS(
 );
 ```
 
-> 13. 分析AP位置并导入数据
+## 13. 分析AP位置并导入数据
 ```bash
 python AP_analyze.py
 ```
 
-> 14. 为AP_GPS_PINS建立索引
+## 14. 为AP_GPS_PINS建立索引
 ```sql
 CREATE INDEX IDX_AP_GPS_PINS_SOURCE_IP ON AP_GPS_PINS (SOURCE_IP);
 ```
@@ -110,7 +110,7 @@ CREATE INDEX IDX_AP_GPS_PINS_SOURCE_IP ON AP_GPS_PINS (SOURCE_IP);
 
 
 
-> xx. 通过此句决定AP地理位置分析优先级
+## xx. 通过此句决定AP地理位置分析优先级
 ```sql
 SELECT
 	SOURCE_IP,
