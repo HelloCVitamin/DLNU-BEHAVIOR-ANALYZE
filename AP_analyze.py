@@ -6,6 +6,7 @@ if __name__ == '__main__':
 
     conn_l = connect_db(PG_DATABASE_LOCALHOST)
     cursor_l = conn_l.cursor()
+
     cursor_l.execute(
         "SELECT SOURCE_IP, count(SOURCE_IP) "
         "FROM USER_LOGIN_HISTORY "
@@ -34,10 +35,8 @@ if __name__ == '__main__':
             {'ap_ip': each_}
         )
         login_info_list = cursor_l.fetchall()
-
-        count_2 = 0
+        print u'AP进度：{}/{}, 数据量={}'.format(count_1, count_ap, len(login_info_list))
         for each__ in login_info_list:
-            count_2 += 1
             openid_list = user_openid_dict.get(each__[0])
             if not openid_list:
                 cursor_l.execute("SELECT openid from user_openid where uid = %(uid)s", {'uid': each__[0]})
@@ -57,7 +56,6 @@ if __name__ == '__main__':
                     }
                 )
                 ap_gps += cursor_l.fetchall()
-                print u'当前AP记录查询进度：{}/{}  AP进度：{}/{}'.format(count_2, len(login_info_list), count_1, count_ap)
         if ap_gps:
             for each_gps in ap_gps:
                 cursor_l.execute(
